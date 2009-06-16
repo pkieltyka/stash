@@ -1,0 +1,73 @@
+================================================================
+                  ____  _            _
+                 / ___|| |_ __ _ ___| |__
+                 \___ \| __/ _` / __| '_ \
+                  ___) | || (_| \__ \ | | |
+                 |____/ \__\__,_|___/_| |_|
+                         VERSION: 0.3
+
+
+              Copyright (C) 2003 Peter Kieltyka
+                        Jan 27, 2003
+                    Updated: Mar 25, 2006
+================================================================
+
+Contents:
+
+[1] What is Stash?
+[2] Usage information
+[3] License
+[4] Misc
+
+
+-- [1] What is Stash? ------------------------------------------
+
+Stash is a basic steganography program that hides a file within a bitmap
+image without disrupting the appearance of the original image. It uses a
+simple algorithm that replaces the least significant bit of a random set
+of bytes from the pixel data of the bitmap image with a bit of the secret
+data. The bits are distributed throughout the container file (BMP) as
+determined by the password supplied to seed the PRNG.
+
+
+-- [2] Usage information ---------------------------------------
+
+ Usage Examples:
+   To Hide:
+     ./stash "image1.bmp" "image2.bmp" "secret.txt" "hello123"
+   To Extract:
+     ./stash "image2.bmp" "secret.txt" "hello123"
+
+ Tested on:
+  - Windows XP
+  - FreeBSD 4.7
+  - Debian Linux 3.0
+  - Mac OS X 10.3
+
+ TODO:
+  - Implement AES cipher to encrypt the data before hiding it
+  - Add JPEG/WAV/MPG support
+
+
+-- [3] License -------------------------------------------------
+
+Stash is licensed under the BSD license. See the attached LICENSE file.
+
+
+-- [4] Misc ----------------------------------------------------
+
+code notes:
+===========
+
+  when hiding:
+  a = (a & ~1) | (((b >> (7-k)) & 1) & 1);
+
+  this takes the bit of byte 'b' at location 'k' (k goes from 0-7, 0 being the LSB)
+  and stores it in the LSB of byte 'a'
+
+
+  when extracting:
+  a = (a & ~(1 << (7-k))) | ((b & 1) << (7-k));
+
+  this assigns 'a' the LSB of 'b' to location 'k' (k goes from 0-7, 0 being the LSB)
+
